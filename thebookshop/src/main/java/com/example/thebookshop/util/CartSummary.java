@@ -48,27 +48,23 @@ public class CartSummary {
 			switch (bookMap.size()) {
 	        case 3:
 	        	discountMap.replace("TEN", list.get(0));
-	        	noDiscountBook = list.get(list.size() - list.size()) - discountMap.get("TEN")
-	        			+list.get(list.size() - (list.size()-1)) - discountMap.get("TEN");
+	        	noDiscountBook = list.get(list.size()-1) - discountMap.get("TEN")
+	        					+list.get(list.size()-2) - discountMap.get("TEN");
 	        	discountMap.replace("NODISCOUNT",noDiscountBook);
 	            break;
 	        case 4:
 	        	discountMap.replace("TWENTY", list.get(0));
 	        	discountMap.replace("TEN", list.get(1) - list.get(0));
-	        	noDiscountBook = discountMap.get("TEN") != 0 ? list.get(list.size() - 1)-list.get(list.size() - 2)  
-	        		: list.get(list.size() - 4) + list.get(list.size() - 3);
+	        	noDiscountBook = (list.get(list.size()-1)  - (discountMap.get("TEN")+discountMap.get("TWENTY"))
+	        					+ list.get(list.size()-2))  - (discountMap.get("TEN")+discountMap.get("TWENTY"));
 	        	discountMap.replace("NODISCOUNT",noDiscountBook);
 	            break;
 	        case 5:
 	        	discountMap.put("TWENTYFIVE", list.get(0));
 	        	discountMap.replace("TWENTY", list.get(1) - list.get(0));
 	        	discountMap.replace("TEN", list.get(2) - list.get(1));
-				noDiscountBook = discountMap.get("TWENTY") != 0 && discountMap.get("TEN") != 0
-						? list.get(list.size() - 1) - list.get(list.size() - 2)
-						: (discountMap.get("TWENTY") == 0 && discountMap.get("TEN") != 0)
-								|| (discountMap.get("TWENTY") != 0 && discountMap.get("TEN") == 0)
-										? list.get(list.size() - 1) - list.get(list.size() - 2)
-										: list.get(list.size() - 5) + list.get(list.size() - 4) + list.get(list.size() - 3);
+	        	noDiscountBook = (list.get(list.size()-1)  - (discountMap.get("TEN")+discountMap.get("TWENTY")+discountMap.get("TWENTYFIVE"))
+	        			+ list.get(list.size()-2))  - (discountMap.get("TEN")+discountMap.get("TWENTY")+discountMap.get("TWENTYFIVE"));
 	        	discountMap.replace("NODISCOUNT",noDiscountBook);
 	            break;
 	        default:
