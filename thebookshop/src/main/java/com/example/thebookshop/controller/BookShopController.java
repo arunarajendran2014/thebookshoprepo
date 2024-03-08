@@ -27,7 +27,7 @@ public class BookShopController {
 	}
 	
 	@PostMapping(value = "/updateCart", consumes = "application/json", produces = "application/json")
-	public CartSummary cartValue(@RequestBody @Valid List<Books> request) {
+	public double cartValue(@RequestBody @Valid List<Books> request) {
 		return bookShopService.calculateCartValue(request);
 		
 	}
