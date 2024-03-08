@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.stream.Collectors;
 
 import com.example.thebookshop.model.Books;
 public class CartSummary {
@@ -15,10 +16,7 @@ public class CartSummary {
 	 
 		public double calculateDifferentFiveBooks(List<Books> request) {
 			
-			double discountPrice = 0.0;
-			double price = 0;
-			int discountPercent = 25;
-			int count = 0;
+			double discountPrice = 0.0;			
 			Map<Integer, Integer> bookMap = new HashMap<>();
 			for(Books book: request) {
 				if(!bookMap.containsKey(book.getBookId())) {
@@ -26,9 +24,13 @@ public class CartSummary {
 				} else {
 					bookMap.put(book.getBookId(), bookMap.get(book.getBookId()) + 1);
 				}				
-			}
-			checkDiscount(bookMap);
-			discountPrice = price - price * discountPercent/100; 
+			}			
+			
+			Map<String, Integer> discountMap = checkDiscount(bookMap);			
+			discountPrice = (discountMap.get("TWENTYFIVE") * 5 * bookPrice)-(discountMap.get("TWENTYFIVE") * 5 * bookPrice) * 25/100 
+					+ (discountMap.get("TWENTY") * 4 * bookPrice)-(discountMap.get("TWENTY") * 4 * bookPrice) * 20/100
+					+ (discountMap.get("TEN") * 3 * bookPrice)- (discountMap.get("TEN") * 3 * bookPrice) * 10/100
+					+ discountMap.get("NODISCOUNT") * bookPrice;
 			return discountPrice; 
 		}
 
@@ -40,13 +42,14 @@ public class CartSummary {
 			discountMap.put("TEN", 0);
 			discountMap.put("NODISCOUNT", 0);
 			
-			List<Integer> list = (List<Integer>) bookMap.values();
+			List<Integer> list = bookMap.entrySet().stream().map(Map.Entry::getValue).collect(Collectors.toList());
 			Collections.sort(list);
 			int noDiscountBook = 0;
 			switch (bookMap.size()) {
 	        case 3:
 	        	discountMap.replace("TEN", list.get(0));
-	        	noDiscountBook = list.get(list.size() - 4)+list.get(list.size() - 3);
+	        	noDiscountBook = list.get(list.size() - list.size()) - discountMap.get("TEN")
+	        			+list.get(list.size() - (list.size()-1)) - discountMap.get("TEN");
 	        	discountMap.replace("NODISCOUNT",noDiscountBook);
 	            break;
 	        case 4:
