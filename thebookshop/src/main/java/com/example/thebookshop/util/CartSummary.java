@@ -1,6 +1,7 @@
 package com.example.thebookshop.util;
 
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -38,57 +39,42 @@ public class CartSummary {
 			discountMap.put("TWENTY", 0);
 			discountMap.put("TEN", 0);
 			discountMap.put("NODISCOUNT", 0);
-			int count = 0;
-			int noDiscountBook = 0;
-			for(Entry<Integer, Integer> map : bookMap.entrySet()) {
-        		count = count + map.getValue();
-        	}
 			
+			List<Integer> list = (List<Integer>) bookMap.values();
+			Collections.sort(list);
+			int noDiscountBook = 0;
 			switch (bookMap.size()) {
-            case 3:
-            	for(Entry<Integer, Integer> map : bookMap.entrySet()) {
-            		count = count + map.getValue();
-            	}
-            	discountMap.replace("TEN", 1);
-            	discountMap.replace("NODISCOUNT", count-bookMap.size() < 3 ? count-bookMap.size() : updateNoDiscount(bookMap));
-                break;
-            case 4:
-            	discountMap.replace("TWENTY", 1);
-            	discountMap.replace("NODISCOUNT", count-bookMap.size() < 3 ? count-bookMap.size() : updateNoDiscount(bookMap));
-                break;
-            case 5:
-            	discountMap.put("TWENTYFIVE", 1);
-            	discountMap.replace("NODISCOUNT", count-bookMap.size() < 3 ? count-bookMap.size() : updateNoDiscount(bookMap));
-                break;
-            default:
-                break;
+	        case 3:
+	        	discountMap.replace("TEN", list.get(0));
+	        	noDiscountBook = list.get(list.size() - 4)+list.get(list.size() - 3);
+	        	discountMap.replace("NODISCOUNT",noDiscountBook);
+	            break;
+	        case 4:
+	        	discountMap.replace("TWENTY", list.get(0));
+	        	discountMap.replace("TEN", list.get(1) - list.get(0));
+	        	noDiscountBook = discountMap.get("TEN") != 0 ? list.get(list.size() - 1)-list.get(list.size() - 2)  
+	        		: list.get(list.size() - 4) + list.get(list.size() - 3);
+	        	discountMap.replace("NODISCOUNT",noDiscountBook);
+	            break;
+	        case 5:
+	        	discountMap.put("TWENTYFIVE", list.get(0));
+	        	discountMap.replace("TWENTY", list.get(1) - list.get(0));
+	        	discountMap.replace("TEN", list.get(2) - list.get(1));
+				noDiscountBook = discountMap.get("TWENTY") != 0 && discountMap.get("TEN") != 0
+						? list.get(list.size() - 1) - list.get(list.size() - 2)
+						: (discountMap.get("TWENTY") == 0 && discountMap.get("TEN") != 0)
+								|| (discountMap.get("TWENTY") != 0 && discountMap.get("TEN") == 0)
+										? list.get(list.size() - 1) - list.get(list.size() - 2)
+										: list.get(list.size() - 5) + list.get(list.size() - 4) + list.get(list.size() - 3);
+	        	discountMap.replace("NODISCOUNT",noDiscountBook);
+	            break;
+	        default:
+	        	for(int i = 0; i < list.size(); i++) {
+	        		noDiscountBook = noDiscountBook + list.get(i);
+	        	}
+	        	discountMap.replace("NODISCOUNT",noDiscountBook);
+	            break;
 			}
 			return discountMap;
 		}
-
-		private int updateNoDiscount(Map<Integer, Integer> bookMap) {
-			int count = 0;
-			int noDiscountBook = 0;
-			for(Entry<Integer, Integer> map : bookMap.entrySet()) {
-        		count = count + map.getValue();
-        	}
-			
-			switch (bookMap.size()) {
-            case 3:
-            	noDiscountBook = 1;
-                break;
-            case 4:
-            	noDiscountBook = 2;
-                break;
-            case 5:
-                break;
-            default:
-                break;
-			}
-		
-			return noDiscountBook;
-		}
-
-		
-
 }
