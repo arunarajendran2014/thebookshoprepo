@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.validation.Valid;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -20,6 +21,14 @@ public class BookShopController {
 	
 	private BookShopService bookShopService;
 	private BooksList bookList;
+	
+	@Autowired
+	public BookShopController(BookShopService bookShopService, BooksList bookList) {
+		super();
+		this.bookShopService = bookShopService;
+		this.bookList = bookList;
+	}
+
 	
 	@GetMapping("/books")
 	public List<Books> getBookList(@RequestParam(value = "id", defaultValue = "") String id){
